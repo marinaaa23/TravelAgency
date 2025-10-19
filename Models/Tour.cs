@@ -1,30 +1,26 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using TravelAgency.Models;
 
-namespace TravelAgency.Models
+public class Tour
 {
-    public class Tour
-    {
-        [Key]
-        public int TourId { get; set; }
-        public int OperatorId { get; set; }
+    public int TourId { get; set; }
+    public int OperatorId { get; set; }
 
-        [Required]
-        public string? Title { get; set; }
-        public string? Description { get; set; }
+    [Required]
+    public string? Title { get; set; }
+    public string? Description { get; set; }
 
-        [Required]
-        public string? Destination { get; set; }
+    [Required]
+    public string? Destination { get; set; }
 
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public decimal Price { get; set; }
-        public int Capacity { get; set; }
-        public int AvailableSpots { get; set; }
-        public bool IsActive { get; set; } = true;
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public decimal Price { get; set; }
+    public int Capacity { get; set; }
+    public int AvailableSpots { get; set; }
+    public bool IsActive { get; set; } = true;
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        public TourOperator? Operator { get; set; }
-        public int Duration => (EndDate - StartDate).Days;
-    }
+    public TourOperator? Operator { get; set; } // Добавь ? здесь
+    public int Duration => (EndDate - StartDate).Days;
 }

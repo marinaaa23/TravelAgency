@@ -12,6 +12,8 @@ namespace TravelAgency.Data
             _context = new TravelDbContext();
         }
 
+        // === СУЩЕСТВУЮЩИЕ МЕТОДЫ ===
+
         // 1. Найти клиентов, забронировавших более 3 путевок
         public List<Client> GetClientsWithMoreThan3Bookings()
         {
@@ -59,17 +61,23 @@ namespace TravelAgency.Data
                 .ToList();
         }
 
-        // Дополнительные методы для работы с данными
+        // === НЕДОСТАЮЩИЕ МЕТОДЫ ===
+
+        // 4. Получить всех клиентов
         public List<Client> GetAllClients()
         {
             return _context.Clients.ToList();
         }
 
+        // 5. Получить все туры
         public List<Tour> GetAllTours()
         {
-            return _context.Tours.Include(t => t.Operator).ToList();
+            return _context.Tours
+                .Include(t => t.Operator)
+                .ToList();
         }
 
+        // 6. Получить все бронирования
         public List<Booking> GetAllBookings()
         {
             return _context.Bookings
@@ -79,16 +87,81 @@ namespace TravelAgency.Data
                 .ToList();
         }
 
+        // 7. Получить все доступные туры (свободные места > 0)
+        public List<Tour> GetAvailableTours()
+        {
+            return _context.Tours
+                .Include(t => t.Operator)
+                .Where(t => t.IsActive && t.AvailableSpots > 0)
+                .ToList();
+        }
+
+        // 8. Добавить нового клиента
         public void AddClient(Client client)
         {
             _context.Clients.Add(client);
             _context.SaveChanges();
         }
 
+        // 9. Создать бронирование
         public void AddBooking(Booking booking)
         {
-            _context.Bookings.Add(booking);
-            _context.SaveChanges();
+            // Проверяем доступность мест
+            var tour = _context.Tours.Find(booking.TourId);
+            if (tour != null && tour.AvailableSpots >= booking.NumberOfPersons)
+            {
+                _context.Bookings.Add(booking);
+
+                // Обновляем доступные места
+                tour.AvailableSpots -= booking.NumberOfPersons;
+                _context.SaveChanges();
+
+                Console.WriteLine($"✅ Бронирование создано! Осталось мест: {tour.AvailableSpots}");
+            }
+            else
+            {
+                Console.WriteLine("❌ Недостаточно свободных мест для бронирования!");
+            }
         }
+
+        // 10. Получить статистику по турам (сколько клиентов забронировали)
+        public List<TourStatistics> GetTourStatistics()
+        {
+            return _context.Tours
+                .Include(t => t.Operator)
+                .Select(t => new TourStatistics
+                {
+                    Tour = t,
+                    TotalBookings = _context.Bookings.Count(b => b.TourId == t.TourId),
+                    TotalClients = _context.Bookings
+                        .Where(b => b.TourId == t.TourId)
+                        .Select(b => b.ClientId)
+                        .Distinct()
+                        .Count()
+                })
+                .ToList();
+        }
+
+        // 11. Получить клиента по ID
+        public Client? GetClientById(int clientId)
+        {
+            return _context.Clients.Find(clientId);
+        }
+
+        // 12. Получить тур по ID
+        public Tour? GetTourById(int tourId)
+        {
+            return _context.Tours
+                .Include(t => t.Operator)
+                .FirstOrDefault(t => t.TourId == tourId);
+        }
+    }
+
+    // Класс для статистики по турам
+    public class TourStatistics
+    {
+        public Tour Tour { get; set; } = null!;
+        public int TotalBookings { get; set; }
+        public int TotalClients { get; set; }
     }
 }

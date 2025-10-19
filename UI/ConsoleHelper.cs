@@ -4,13 +4,12 @@ namespace TravelAgency.UI
 {
     public static class ConsoleHelper
     {
-        // Цвета палитры 2025 года
-        private static ConsoleColor Pink = ConsoleColor.Magenta;
-        private static ConsoleColor Brown = ConsoleColor.DarkYellow;
-        private static ConsoleColor Cream = ConsoleColor.Yellow;
-        private static ConsoleColor Text = ConsoleColor.White;
-        private static ConsoleColor Success = ConsoleColor.Green;
-        private static ConsoleColor Error = ConsoleColor.Red;
+        private static ConsoleColor Pink = ConsoleColor.Magenta;       // Розовый акцент
+        private static ConsoleColor Brown = ConsoleColor.DarkYellow;   // Коричневый
+        private static ConsoleColor Cream = ConsoleColor.DarkYellow;    // Тёмно-зелёный 
+        private static ConsoleColor Text = ConsoleColor.White;         // Основной текст
+        private static ConsoleColor Success = ConsoleColor.Green;      // Сообщения об успехе
+        private static ConsoleColor Error = ConsoleColor.Red;          // Сообщения об ошибках
 
         public static void PrintHeader()
         {
@@ -18,8 +17,8 @@ namespace TravelAgency.UI
             Console.ForegroundColor = Pink;
             Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
             Console.WriteLine("║                                                              ║");
-            Console.ForegroundColor = Cream;
-            Console.WriteLine("║                 🏝️  ТУРИСТИЧЕСКОЕ АГЕНТСТВО                 ║");
+            Console.ForegroundColor = Cream; 
+            Console.WriteLine("║                 🏝️  ТУРИСТИЧЕСКОЕ АГЕНТСТВО                  ║");
             Console.ForegroundColor = Pink;
             Console.WriteLine("║                                                              ║");
             Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
@@ -38,8 +37,10 @@ namespace TravelAgency.UI
         {
             Console.ForegroundColor = Cream;
             Console.Write($" {number}. ");
-            Console.ForegroundColor = Text;
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine(text);
+
+            Console.ResetColor();
         }
 
         public static void PrintSuccess(string message)
@@ -72,7 +73,7 @@ namespace TravelAgency.UI
 
         public static int ReadChoice(int min, int max)
         {
-            Console.ForegroundColor = Cream;
+            Console.ForegroundColor = Cream; 
             Console.Write("Выберите пункт: ");
             Console.ResetColor();
 
